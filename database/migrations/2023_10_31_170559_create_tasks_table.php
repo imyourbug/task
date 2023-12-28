@@ -13,27 +13,14 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_task');
             $table->string('name')->nullable();
-            $table->string('password')->nullable();
-            $table->integer('cod');
-            $table->string('receiver')->nullable();
-            $table->string('phone_receiver')->nullable();
-            $table->string('phone_otp')->nullable();
-            $table->string('address')->nullable();
-            $table->string('ward')->nullable();
-            $table->string('district')->nullable();
-            $table->string('province')->nullable();
-            $table->string('link')->nullable();
-            $table->string('code')->nullable();
-            $table->integer('wage');
-            $table->integer('status')->default(0); // 0 - doing, 1 - done
-            $table->integer('is_display_otp')->default(0); // 0 - no, 1 - yes
-            $table->unsignedBigInteger('user_id');
-            $table->integer('id_order')->nullable();
-            $table->string('otp')->nullable();
-            $table->string('audio')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->integer('status')->default(0); // 0 - doing, 1 - done
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('type_id');
+            $table->unsignedBigInteger('contract_id');
+            $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('null');
+            $table->foreign('type_id')->references('id')->on('task_types')->onDelete('cascade');
             $table->timestamps();
         });
     }

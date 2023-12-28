@@ -13,9 +13,15 @@ class LoginRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return [
-            'email' => 'required|email:dns,rfc',
+        $tel_or_email = $this->tel_or_email;
+        $validate = [
+            'tel_or_email' => 'required|email:dns,rfc',
             'password' => 'required|string',
         ];
+        if (is_numeric($tel_or_email)) {
+            $validate['tel_or_email'] = 'required|string|regex:/^0\d{9,10}$/';
+        }
+
+        return $validate;
     }
 }

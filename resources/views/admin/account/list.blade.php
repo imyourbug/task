@@ -28,7 +28,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Tài khoản</th>
+                <th>Số điện thoại</th>
                 <th>Email</th>
                 <th>Quyền</th>
                 <th>Cập nhật lần cuối</th>

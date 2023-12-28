@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Accounts\CreateAccountRequest;
 use App\Http\Requests\Admin\Accounts\UpdateAccountRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Throwable;
 use Toastr;
 
@@ -21,17 +22,24 @@ class AccountController extends Controller
 
     public function store(CreateAccountRequest $request)
     {
-        $check = User::where('email', $request->input('tel_or_email'))
-            ->orWhere('name', $request->input('tel_or_email'))
+        $tel_or_email = $request->input('tel_or_email');
+        $check = User::where(is_numeric($tel_or_email) ? 'name' : 'email', $tel_or_email)
             ->get();
-        if ($check) {
-            Toastr::error('Email đã có người đăng ký!', __('title.toastr.fail'));
+        if ($check->count() > 0) {
+            Toastr::error('Tài khoản đã có người đăng ký!', __('title.toastr.fail'));
+
             return redirect()->back();
         }
-        if ($user = User::create($request->validated())) {
-            // DetailInfo::create(['user_id' => $user->id]);
-            Toastr::success(__('message.success.register'), __('title.toastr.success'));
-        } else Toastr::error(__('message.fail.register'), __('title.toastr.fail'));
+        try {
+            User::create([
+                is_numeric($tel_or_email) ? 'name' : 'email' =>  $tel_or_email,
+                'password' => Hash::make($request->input('password'))
+            ]);
+            Toastr::success('Tạo tài khoản thành công', 'Thông báo');
+        } catch (Throwable $e) {
+            dd($e);
+            Toastr::error('Tạo tài khoản thất bại', 'Thông báo');
+        }
 
         return redirect()->back();
     }

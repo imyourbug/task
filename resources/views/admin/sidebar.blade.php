@@ -56,7 +56,7 @@
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-barcode"></i>
                             <p>
-                                Volunteer Hours
+
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 use Toastr;
 
 class UserController extends Controller
@@ -43,6 +44,7 @@ class UserController extends Controller
     {
         if (!$user = User::firstWhere('email', $request->input('email'))) {
             Toastr::error('Email không tồn tại!', 'Thông báo');
+
             return redirect()->back();
         }
         $source = [
@@ -58,26 +60,31 @@ class UserController extends Controller
         if ($reset_password) {
             Mail::to($request->input('email'))->send(new RecoverPasswordMail($new_password));
         }
-
         Toastr::success('Lấy mật khẩu thành công! Hãy kiểm tra email của bạn', 'Thông báo');
+
         return redirect()->back();
     }
 
     public function logout()
     {
         Auth::logout();
+
         return redirect()->route('users.login');
     }
 
     public function checkLogin(LoginRequest $request)
     {
-        if (Auth::attempt($request->validated())) {
+        $tel_or_email = $request->input('tel_or_email');
+        if (Auth::attempt([
+            is_numeric($tel_or_email) ? 'name' : 'email' => $tel_or_email,
+            'password' => $request->input('password')
+        ])) {
             Toastr::success('Đăng nhập thành công', 'Thông báo');
             $user = Auth::user();
 
             return redirect()->route($user->role == 1 ? 'admin.index' : 'users.home');
         }
-        Toastr::error('Đăng nhập thất bại', 'Thông báo');
+        Toastr::error('Tài khoản hoặc mật khẩu không chính xác', 'Thông báo');
 
         return redirect()->back();
     }
@@ -89,6 +96,7 @@ class UserController extends Controller
         ]);
         if ($rs) {
             Toastr::success('Đổi mật khẩu thành công', 'Thông báo');
+
             return response()->json([
                 'status' => 0,
                 'message' => 'Đổi mật khẩu thành công'
@@ -116,20 +124,21 @@ class UserController extends Controller
             ->get();
         if ($check->count() > 0) {
             Toastr::error('Tài khoản đã có người đăng ký!', __('title.toastr.fail'));
+
             return redirect()->back();
         }
-        User::create([
-            'password' => Hash::make($request->input('password')),
-            is_numeric($tel_or_email) ? 'email' : 'name' =>  $tel_or_email
-        ]);
-
-        if (User::create($request->except('repassword'))) {
+        try {
+            User::create([
+                is_numeric($tel_or_email) ? 'name' : 'email' =>  $tel_or_email,
+                'password' => Hash::make($request->input('password'))
+            ]);
             Toastr::success('Đăng ký thành công', 'Thông báo');
+        } catch (Throwable) {
+            Toastr::error(__('message.fail.register'), 'Thông báo');
 
-            return redirect()->route('users.login');
+            return redirect()->back();
         }
-        Toastr::error(__('message.fail.register'), 'Thông báo');
 
-        return redirect()->back();
+        return redirect()->route('users.login');
     }
 }

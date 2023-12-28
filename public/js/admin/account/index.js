@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    $('#table').DataTable({
-            responsive: true
-        });
+    var dataTable = $('#table').DataTable({
+        responsive: true
+    });
     $(".btn-delete").on("click", function () {
         if (confirm("Bạn có muốn xóa")) {
             let id = $(this).data("id");

@@ -13,15 +13,13 @@ class CreateAccountRequest extends BaseRequest
      */
     public function rules(): array
     {
-        dd(1);
         $tel_or_email = $this->tel_or_email;
-        $is_email = preg_match('/(@)/', $tel_or_email);
-        dd($is_email);
-
-        return [
-            'tel_or_email' => 'required|string',
+        $validate = [
+            'tel_or_email' => !is_numeric($tel_or_email) ? 'required|email:dns,rfc'
+                : 'required|string|regex:/^0\d{9,10}$/',
             'password' => 'required|string',
-            'role' => 'required|integer|in:0,1',
         ];
+
+        return $validate;
     }
 }

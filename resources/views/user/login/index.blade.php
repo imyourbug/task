@@ -39,8 +39,8 @@
                 <div class="card-body login-card-body">
                     <form action="{{ route('users.checkLogin') }}" method="POST">
                         <div class="input-group mb-3">
-                            <input name="email" type="email" value="{{ old('email') }}" class="form-control"
-                                placeholder="Email">
+                            <input name="tel_or_email" type="text" value="{{ old('tel_or_email') }}" class="form-control"
+                                placeholder="Nhập số điện thoại hoặc email">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-envelope"></span>
@@ -49,7 +49,7 @@
                         </div>
                         <div class="input-group mb-3">
                             <input type="password" name="password" value="{{ old('password') }}" class="form-control"
-                                placeholder="Password">
+                                placeholder="Nhập mật khẩu">
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-lock"></span>
