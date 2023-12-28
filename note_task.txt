@@ -1,0 +1,5 @@
+- Thêm 1 sheet lưu sdt lấy otp cùng trạng thái.
+- Mỗi khi người dùng nhấn lấy otp 
+-> hiển thị số điện thoại lấy otp (chèn vào tbl tasks) 
+-> call api lấy otp -> lấy otp thành công 
+-> sửa sdt đã lấy otp ở sheet 2 trạng thái = đã lấy, lưu sdt vào sheet(cột sdt otp).
