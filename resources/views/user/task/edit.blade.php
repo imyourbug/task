@@ -77,7 +77,7 @@
         </div>
         <input name="id" value="{{ $user->id }}" type="hidden" />
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
         </div>
         @csrf
     </form>

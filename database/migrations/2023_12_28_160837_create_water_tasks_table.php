@@ -16,6 +16,7 @@ return new class extends Migration
             $table->float('asen')->default(0);
             $table->float('ph')->default(0);
             $table->float('stiffness')->default(0);
+            $table->date('plan_date')->nullable();
             $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();

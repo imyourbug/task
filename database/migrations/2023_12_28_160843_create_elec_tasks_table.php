@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('elec_tasks', function (Blueprint $table) {
             $table->id();
             $table->float('amount')->default(0);
+            $table->date('plan_date')->nullable();
             $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();

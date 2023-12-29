@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\TaskType;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,5 +22,15 @@ class DatabaseSeeder extends Seeder
         // ]);
         // $this->call([
         // ]);
+
+        TaskType::create([
+            'name' => 'Đo nước',
+        ]);
+        TaskType::create([
+            'name' => 'Đo không khí',
+        ]);
+        TaskType::create([
+            'name' => 'Đo điện',
+        ]);
     }
 }

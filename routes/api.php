@@ -25,8 +25,22 @@ Route::group(['namespace' => 'App\Http\Controllers\Users'], function () {
     Route::get('/getNumberphone', 'TaskController@getNumberphone');
 });
 
-Route::group(['prefix' => 'accounts', 'as' => 'accounts.'], function () {
-    Route::delete('/{id}/destroy', [AccountController::class, 'destroy'])->name('destroy');
+Route::group(['namespace' => 'App\Http\Controllers\Admin'], function () {
+    Route::group(['namespace' => 'Accounts','prefix' => 'accounts', 'as' => 'accounts.'], function () {
+        Route::delete('/{id}/destroy', 'AccountController@destroy')->name('destroy');
+    });
+    Route::group(['namespace' => 'Customers','prefix' => 'customers', 'as' => 'customers.'], function () {
+        Route::delete('/{id}/destroy', 'CustomerController@destroy')->name('destroy');
+    });
+    Route::group(['namespace' => 'TaskTypes','prefix' => 'tasktypes', 'as' => 'tasktypes.'], function () {
+        Route::delete('/{id}/destroy', 'TaskTypeController@destroy')->name('destroy');
+    });
+    Route::group(['namespace' => 'Contracts','prefix' => 'contracts', 'as' => 'contracts.'], function () {
+        Route::delete('/{id}/destroy', 'ContractController@destroy')->name('destroy');
+    });
 });
 
+// Route::group(['prefix' => 'accounts', 'as' => 'accounts.'], function () {
+//     Route::delete('/{id}/destroy', [AccountController::class, 'destroy'])->name('destroy');
+// });
 

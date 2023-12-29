@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function() {
+
+Route::get('/', function () {
     return view('user.login.index', [
         'title' => 'Đăng nhập'
     ]);
@@ -33,7 +34,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'App\Http\Controllers\Users', '
     Route::get('logout', 'UserController@logout')->name('logout');
 
     #task
-    Route::group(['prefix' => 'task', 'as' => 'task.', 'middleware' => 'auth' ], function () {
+    Route::group(['prefix' => 'task', 'as' => 'task.', 'middleware' => 'auth'], function () {
 
         Route::get('/', 'TaskController@index')->name('index');
         Route::post('/download', 'TaskController@download')->name('download');
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'App\Http\Controllers\Users', '
 #admin
 Route::group(['prefix' => '/admin', 'namespace' => 'App\Http\Controllers\Admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
     Route::get('/', 'AdminController@index')->name('index');
+    
     #accounts
     Route::group(['prefix' => 'accounts', 'namespace' => 'Accounts', 'as' => 'accounts.'], function () {
         Route::get('/', 'AccountController@index')->name('index');
@@ -55,8 +57,35 @@ Route::group(['prefix' => '/admin', 'namespace' => 'App\Http\Controllers\Admin',
         Route::post('/create', 'AccountController@store')->name('store');
         Route::get('/update/{id}', 'AccountController@show')->name('show');
         Route::post('/update', 'AccountController@update')->name('update');
-        Route::get('/delete/{id}', 'AccountController@delete')->name('delete');
     });
+
+    #customers
+    Route::group(['prefix' => 'customers', 'namespace' => 'Customers', 'as' => 'customers.'], function () {
+        Route::get('/', 'CustomerController@index')->name('index');
+        Route::get('/create', 'CustomerController@create')->name('create');
+        Route::post('/create', 'CustomerController@store')->name('store');
+        Route::get('/update/{id}', 'CustomerController@show')->name('show');
+        Route::post('/update', 'CustomerController@update')->name('update');
+    });
+
+     #tasktypes
+     Route::group(['prefix' => 'tasktypes', 'namespace' => 'TaskTypes', 'as' => 'tasktypes.'], function () {
+        Route::get('/', 'TaskTypeController@index')->name('index');
+        Route::get('/create', 'TaskTypeController@create')->name('create');
+        Route::post('/create', 'TaskTypeController@store')->name('store');
+        Route::get('/update/{id}', 'TaskTypeController@show')->name('show');
+        Route::post('/update', 'TaskTypeController@update')->name('update');
+    });
+
+    #customers
+    Route::group(['prefix' => 'contracts', 'namespace' => 'Contracts', 'as' => 'contracts.'], function () {
+        Route::get('/', 'ContractController@index')->name('index');
+        Route::get('/create', 'ContractController@create')->name('create');
+        Route::post('/create', 'ContractController@store')->name('store');
+        Route::get('/update/{id}', 'ContractController@show')->name('show');
+        Route::post('/update', 'ContractController@update')->name('update');
+    });
+
     #volunteers
     Route::group(['prefix' => 'volunteers', 'namespace' => 'Volunteers', 'as' => 'volunteers.'], function () {
         Route::get('/', 'VolunteerController@index')->name('index');

@@ -24,6 +24,7 @@
     <script></script>
 @endpush
 @section('content')
+<a href="{{ route('admin.accounts.create') }}" class="btn btn-success">Thêm mới</a>
     <table id="table" class="table display nowrap dataTable dtr-inline collapsed">
         <thead>
             <tr>
@@ -45,9 +46,11 @@
                     <td><a class="btn btn-primary btn-sm" href='{{ route('admin.accounts.show', ['id' => $user->id]) }}'>
                             <i class="fas fa-edit"></i>
                         </a>
-                        <button data-id="{{ $user->id }}" class="btn btn-danger btn-sm btn-delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        @if ($user->id != Auth::id())
+                            <button data-id="{{ $user->id }}" class="btn btn-danger btn-sm btn-delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        @endif
                     </td>
                 </tr>
             @endforeach

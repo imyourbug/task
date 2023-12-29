@@ -8,6 +8,7 @@ use App\Http\Requests\Users\LoginRequest;
 use App\Http\Requests\Users\RecoverRequest;
 use App\Http\Requests\Users\RegisterRequest;
 use App\Mail\RecoverPasswordMail;
+use App\Models\InfoUser;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -128,12 +129,20 @@ class UserController extends Controller
             return redirect()->back();
         }
         try {
-            User::create([
+            DB::beginTransaction();
+            $user = User::create([
                 is_numeric($tel_or_email) ? 'name' : 'email' =>  $tel_or_email,
                 'password' => Hash::make($request->input('password'))
             ]);
+            InfoUser::create([
+                'name' =>  $tel_or_email,
+                'user_id' => $user->id
+            ]);
             Toastr::success('Đăng ký thành công', 'Thông báo');
-        } catch (Throwable) {
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            dd($e);
             Toastr::error(__('message.fail.register'), 'Thông báo');
 
             return redirect()->back();

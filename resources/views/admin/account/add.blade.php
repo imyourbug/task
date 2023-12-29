@@ -31,7 +31,7 @@
                         <div class="custom-control custom-radio">
                             <input class="custom-control-input" type="radio" id="user" value="0" name="role"
                                 checked>
-                            <label for="user" class="custom-control-label">Người dùng</label>
+                            <label for="user" class="custom-control-label">Nhân viên</label>
                         </div>
                         <div class="custom-control custom-radio">
                             <input class="custom-control-input" type="radio" id="customer" value="2" name="role">
@@ -46,7 +46,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
         </div>
         @csrf
     </form>
