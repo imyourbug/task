@@ -29,19 +29,16 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
         });
         $this->renderable(function (Throwable $e, $request) {
+            dd($e);
             if ($e instanceof ValidationException) {
-                // dd($e);
                 foreach ($e->errors() as $err) {
                     Toastr::error($err[0], 'Thông báo');
                 }
-                return;
-                // return redirect()->back();
             }
             else if ($e instanceof Exception) {
                 Toastr::error($e->getMessage(), 'Thông báo');
-                // return redirect()->back();
-                return;
             }
+            return redirect()->back();
         });
     }
 }

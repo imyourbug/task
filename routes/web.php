@@ -49,7 +49,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'App\Http\Controllers\Users', '
 #admin
 Route::group(['prefix' => '/admin', 'namespace' => 'App\Http\Controllers\Admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
     Route::get('/', 'AdminController@index')->name('index');
-    
+
     #accounts
     Route::group(['prefix' => 'accounts', 'namespace' => 'Accounts', 'as' => 'accounts.'], function () {
         Route::get('/', 'AccountController@index')->name('index');
@@ -77,11 +77,10 @@ Route::group(['prefix' => '/admin', 'namespace' => 'App\Http\Controllers\Admin',
         Route::post('/update', 'TaskTypeController@update')->name('update');
     });
 
-    #customers
+    #contracts
     Route::group(['prefix' => 'contracts', 'namespace' => 'Contracts', 'as' => 'contracts.'], function () {
         Route::get('/', 'ContractController@index')->name('index');
         Route::get('/create', 'ContractController@create')->name('create');
-        Route::post('/create', 'ContractController@store')->name('store');
         Route::get('/update/{id}', 'ContractController@show')->name('show');
         Route::post('/update', 'ContractController@update')->name('update');
     });

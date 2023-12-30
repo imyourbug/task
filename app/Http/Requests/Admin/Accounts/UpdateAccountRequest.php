@@ -16,7 +16,7 @@ class UpdateAccountRequest extends BaseRequest
         return [
             'id' => 'required|integer',
             'password' => 'required|string',
-            'role' => 'required|integer|in:0,1',
+            'role' => 'required|integer|in:0,1,2',
         ];
     }
 }

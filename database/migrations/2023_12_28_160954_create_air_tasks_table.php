@@ -16,8 +16,9 @@ return new class extends Migration
             $table->float('fine_dust')->default(0);
             $table->float('dissolve')->default(0);
             $table->date('plan_date')->nullable();
-            $table->unsignedBigInteger('task_id');
-            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('contract_id');
+            $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
             $table->timestamps();
         });
     }

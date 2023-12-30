@@ -36,6 +36,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Admin'], function () {
         Route::delete('/{id}/destroy', 'TaskTypeController@destroy')->name('destroy');
     });
     Route::group(['namespace' => 'Contracts','prefix' => 'contracts', 'as' => 'contracts.'], function () {
+        Route::post('/create', 'ContractController@store')->name('store');
         Route::delete('/{id}/destroy', 'ContractController@destroy')->name('destroy');
     });
 });

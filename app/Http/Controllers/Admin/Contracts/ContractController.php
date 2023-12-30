@@ -10,6 +10,8 @@ use App\Models\Customer;
 use App\Models\InfoUser;
 use App\Models\TaskType;
 use App\Models\User;
+use DateInterval;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -27,38 +29,80 @@ class ContractController extends Controller
         ]);
     }
 
-    public function store(CreateAccountRequest $request)
+    public function getRangeTime($type, $value, $start, $finish)
     {
-        $tel_or_email = $request->input('tel_or_email');
-        $check = Contract::where(is_numeric($tel_or_email) ? 'name' : 'email', $tel_or_email)
-            ->get();
-        if ($check->count() > 0) {
-            Toastr::error('Hợp đồng đã có người đăng ký!', __('title.toastr.fail'));
-
-            return redirect()->back();
+        //
+        $start = new DateTime($start);
+        $finish = new DateTime($finish);
+        $result = [];
+        switch ($type) {
+            case 'date':
+                for ($date = $start; $date <= $finish; $date->add(new DateInterval('P1D'))) {
+                    if ($date->format('d') == $value) {
+                        $result[] = $date->format('Y-m-d');
+                    }
+                }
+                dd($result);
+                break;
+            case 'day':
+                for ($date = $start; $date <= $finish; $date->add(new DateInterval('P1D'))) {
+                    $weekday = date("l", strtotime($date->format('Y-m-d')));
+                    if ($weekday == $value) {
+                        array_push($result, $date->format('Y-m-d'));
+                    }
+                }
+                break;
         }
+
+        return $result;
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'customer_id' => 'required|int',
+            'start' => 'required|date',
+            'finish' => 'required|date',
+            'content' => 'required|string',
+            'task_type' => 'nullable|array',
+            // 0 - elec, 1 - water, 2 - air
+            'task_type.*' => 'nullable|in:0,1,2',
+            'type_elec' => 'nullable|in:date,day',
+            'value_elec' => 'nullable',
+            'type_water' => 'nullable|in:date,day',
+            'value_water' => 'nullable',
+            'type_air' => 'nullable|in:date,day',
+            'value_air' => 'nullable',
+        ]);
+        dd($this->getRangeTime($data['type_elec'], $data['value_elec'], $data['start'], $data['finish']));
         try {
             DB::beginTransaction();
-            $Contract = Contract::create([
-                is_numeric($tel_or_email) ? 'name' : 'email' =>  $tel_or_email,
-                'password' => Hash::make($request->input('password'))
+            $contract = Contract::create([
+                'customer_id' =>  $data['customer_id'],
+                'start' =>  $data['start'],
+                'finish' =>  $data['finish'],
+                'content' =>  $data['content'],
             ]);
-            switch ((int) $request->role) {
-                case 0:
-                    InfoContract::create([
-                        'name' =>  $tel_or_email,
-                        'contract_id' => $Contract->id
-                    ]);
-                    break;
-                case 2:
-                    Customer::create([
-                        'name' =>  $tel_or_email,
-                        'contract_id' => $Contract->id
-                    ]);
-                    break;
-                default:
-                    break;
-            };
+            if (!empty($data['task_type'])) {
+                foreach ($data['task_type'] as $type) {
+                    switch ((int)$type) {
+                            // create electric task
+                        case 0:
+                            $rangeTime = $this->getRangeTime($data['type_elec'], $data['value_elec'], $data['start'], $data['finish']);
+                            $data = [];
+                            foreach($rangeTime as $time) {
+                                $data [] = [
+                                    ''
+                                ];
+                            };
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                    };
+                }
+            }
             Toastr::success('Tạo hợp đồng thành công', 'Thông báo');
             DB::commit();
         } catch (Throwable $e) {

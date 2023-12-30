@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('elec_tasks', function (Blueprint $table) {
+        Schema::create('task_types', function (Blueprint $table) {
             $table->id();
-            $table->float('amount')->default(0);
-            $table->date('plan_date')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('contract_id');
-            $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('elec_tasks');
+        Schema::dropIfExists('task_types');
     }
 };

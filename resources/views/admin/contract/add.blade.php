@@ -2,43 +2,182 @@
 @push('styles')
 @endpush
 @push('scripts')
-    {{-- <script src="/js/admin/contract/index.js"></script> --}}
+    <script src="/js/admin/contract/index.js"></script>
     <script>
-        $(document).ready(function() {
-            //list
-            var dataTable = $("#table").DataTable({
-                responsive: true,
-            });
-            $(".btn-delete").on("click", function() {
-                if (confirm("Bạn có muốn xóa")) {
-                    let id = $(this).data("id");
-                    $.ajax({
-                        type: "DELETE",
-                        url: `/api/contracts/${id}/destroy`,
-                        data: {
-                            _token: 1,
-                        },
-                        success: function(response) {
-                            if (response.status == 0) {
-                                toastr.success("Xóa thành công");
-                                $(".row" + id).remove();
-                            } else {
-                                toastr.error(response.message);
-                            }
-                        },
-                    });
-                }
-            });
-
-            //add
+        //list
+        $(".btn-delete").on("click", function() {
+            if (confirm("Bạn có muốn xóa")) {
+                let id = $(this).data("id");
+                $.ajax({
+                    type: "DELETE",
+                    url: `/api/contracts/${id}/destroy`,
+                    data: {
+                        _token: 1,
+                    },
+                    success: function(response) {
+                        if (response.status == 0) {
+                            toastr.success("Xóa thành công");
+                            $(".row" + id).remove();
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                });
+            }
         });
 
+        function renderDate() {
+            let html = '';
+            for (let index = 1; index <= 31; index++) {
+                html += `<option value="${index}">${index}</option> `;
+            }
+
+            return html;
+        }
+
+        function renderDay() {
+            return `<option value="Monday">Thứ hai</option>
+                    <option value="Tuesday">Thứ ba</option>
+                    <option value="Wednesday">Thứ tư</option>
+                    <option value="Thursday">Thứ năm</option>
+                    <option value="Friday">Thứ sáu</option>
+                    <option value="Saturday">Thứ bảy</option>
+                    <option value="Sunday">Chủ nhật</option>`;
+        }
+
+        function renderOption(type, className) {
+            console.log(type, className);
+            $('.option-day-' + className).remove();
+            $('.option-date-' + className).remove();
+            let html = type == 'day' ?
+                `<div class="option-day-${className}">
+                        Chọn thứ (hàng tuần)
+                        <select class="custom-select form-control-border select-day-${className}">
+                            ${renderDay()}
+                        </select>
+                    </div>` :
+                `<div class="option-date-${className}">
+                        Chọn ngày (hàng tháng)
+                        <select class="custom-select form-control-border select-date-${className}">
+                            <option value="0">Cuối tháng</option>
+                                ${renderDate()}
+                        </select>
+                    </div>`;
+            $('.option-type-' + className).append(html);
+        }
+
+        function changeType(className) {
+            renderOption($('.select-type-' + className).find(":selected").val(), className);
+        }
+
         //add
+        var type_air = $('#type_air');
+        var type_elec = $('#type_elec');
+        var type_water = $('#type_water');
+        //
+        type_elec.on('click', function() {
+            if (this.checked) {
+                if (!$('div.option-elec').length) {
+                    $('.card-body').append(`
+                        <div class="row option-elec">
+                            <div class="col-lg-12">
+                                <div class="form-group option-type-elec" style="align-items: center">
+                                    <label for="menu">Đo điện theo</label>
+                                    <select class="custom-select form-control-borders select-type-elec" onchange="changeType('elec')">
+                                        <option value="day">Thứ</option>
+                                        <option value="date" selected>Ngày</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>`);
+                    renderOption($('.select-type-elec').find(":selected").val(), 'elec');
+                }
+            } else {
+                $('.option-elec').remove();
+            }
+        });
+        //
+        type_air.on('click', function() {
+            if (this.checked) {
+                if (!$('div.option-air').length) {
+                    $('.card-body').append(`
+                        <div class="row option-air">
+                            <div class="col-lg-12">
+                                <div class="form-group option-type-air" style="align-items: center">
+                                    <label for="menu">Đo không khí theo</label>
+                                    <select class="custom-select form-control-borders select-type-air" onchange="changeType('air')">
+                                        <option value="day"  selected>Thứ</option>
+                                        <option value="date">Ngày</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>`);
+                    renderOption($('.select-type-air').find(":selected").val(), 'air');
+                }
+            } else {
+                $('.option-air').remove();
+            }
+        });
+        //
+        type_water.on('click', function() {
+            if (this.checked) {
+                if (!$('div.option-water').length) {
+                    $('.card-body').append(`
+                        <div class="row option-water">
+                            <div class="col-lg-12">
+                                <div class="form-group option-type-water" style="align-items: center">
+                                    <label for="menu">Đo nước theo</label>
+                                    <select class="custom-select form-control-borders select-type-water" onchange="changeType('water')">
+                                        <option value="day" selected>Thứ</option>
+                                        <option value="date">Ngày</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>`);
+                    renderOption($('.select-type-water').find(":selected").val(), 'water');
+                }
+            } else {
+                $('.option-water').remove();
+            }
+        });
+        //add
+        $('.btn-create').on('click', function() {
+            console.log(123);
+            let params = [];
+            $.ajax({
+                type: "POST",
+                url: '{{ route('admin.contracts.store') }}',
+                data: {
+                    _token: 1,
+                },
+                success: function(response) {
+                    if (response.status == 0) {
+                        toastr.success("Tạo thành công");
+                        $(".row" + id).remove();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+            });
+        });
     </script>
 @endpush
 @section('content')
-    <form action="{{ route('admin.customers.store') }}" method="POST">
+    <div class="form-contract">
         <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="menu">Khách hàng</label>
+                        <select class="form-control" name="customer_id" id="">
+                            <option value="">--Khách hàng--</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-6 col-md-12">
                     <div class="form-group">
@@ -64,19 +203,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="menu">Khách hàng</label>
-                        <select class="form-control" name="customer_id" id="">
-                            <option value="">--Khách hàng--</option>
-                            @foreach ($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
@@ -99,66 +226,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row option-type-elec">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="menu">Đo điện</label>
-                        <div class="">
-                            Chọn ngày
-                            <select class="custom-select form-control-border" name="" id="">
-                                <option value="0">Cuối tháng</option>
-                                @for ($i = 1; $i <= 31; $i++)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="">
-                            Chọn thứ (hàng tuần)
-                            <select class="custom-select form-control-border" name="" id="">
-                                <option value="0">Thứ hai</option>
-                                <option value="1">Thứ ba</option>
-                                <option value="2">Thứ tư</option>
-                                <option value="3">Thứ năm</option>
-                                <option value="4">Thứ sáu</option>
-                                <option value="5">Thứ bảy</option>
-                                <option value="6">Chủ nhật</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row option-type-water">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="menu">Đo nước</label>
-                        <div class="">
-                            Chọn thứ (hàng tuần)
-                            <select class="custom-select form-control-border" name="" id="">
-                                <option value="0">Thứ hai</option>
-                                <option value="1">Thứ ba</option>
-                                <option value="2">Thứ tư</option>
-                                <option value="3">Thứ năm</option>
-                                <option value="4">Thứ sáu</option>
-                                <option value="5">Thứ bảy</option>
-                                <option value="6">Chủ nhật</option>
-                            </select>
-                        </div>
-                        <div class="">
-                            Chọn ngày
-                            <select class="custom-select form-control-border" name="" id="">
-                                <option value="0">Cuối tháng</option>
-                                @for ($i = 1; $i <= 31; $i++)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Lưu</button>
+            <button class="btn btn-primary btn-create">Lưu</button>
         </div>
-        @csrf
-    </form>
+    </div>
 @endsection
