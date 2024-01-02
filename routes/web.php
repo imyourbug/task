@@ -34,15 +34,16 @@ Route::group(['prefix' => 'user', 'namespace' => 'App\Http\Controllers\Users', '
     Route::get('logout', 'UserController@logout')->name('logout');
 
     #task
-    Route::group(['prefix' => 'task', 'as' => 'task.', 'middleware' => 'auth'], function () {
+    Route::group(['prefix' => 'tasks', 'as' => 'tasks.', 'middleware' => 'auth'], function () {
         Route::get('/', 'TaskController@index')->name('index');
-        Route::post('/download', 'TaskController@download')->name('download');
-        Route::get('/complete/{id}', 'TaskController@update')->name('update');
-        Route::get('/delete/{id}', 'TaskController@destroy')->name('destroy');
-        Route::get('/display/{id}', 'TaskController@display')->name('display');
+        Route::get('/today', 'TaskController@taskToday')->name('taskToday');
+        // Route::post('/download', 'TaskController@download')->name('download');
+        // Route::get('/complete/{id}', 'TaskController@update')->name('update');
+        // Route::get('/delete/{id}', 'TaskController@destroy')->name('destroy');
+        // Route::get('/display/{id}', 'TaskController@display')->name('display');
     });
     #upload
-    Route::post('/upload-excel', 'UploadController@upload')->name('upload')->middleware('auth');
+    // Route::post('/upload-excel', 'UploadController@upload')->name('upload')->middleware('auth');
 });
 
 #admin

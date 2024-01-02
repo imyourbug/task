@@ -5,7 +5,7 @@
     <div class="sidebar">
         @switch(Auth::user()?->role)
             @case(0)
-                <a href="{{ route('users.home') }}" class="brand-link text-center">
+                <a href="{{ route('users.tasks.taskToday') }}" class="brand-link text-center">
                     <span class="brand-text font-weight-light">Nhân viên</span>
                 </a>
             @break
@@ -24,8 +24,21 @@
         @endswitch
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="info    ">
-                <a href="{{ route('users.home') }}" class="d-block">{{ Auth::user()?->email }}</a>
+            <div class="info">
+                @switch(Auth::user()?->role)
+                    @case(0)
+                        <a href="{{ route('users.tasks.taskToday') }}"
+                            class="d-block">{{ Auth::user()?->staff->name ?? Auth::user()?->email }}</a>
+                    @break
+
+                    @case(1)
+                        <a href="{{ route('admin.index') }}" class="d-block">{{ Auth::user()?->email }}</a>
+                    @break
+
+                    {{-- @case(2)
+                        <a href="{{ route('admin.index') }}" class="d-block">{{ Auth::user()?->email }}</a>
+                    @break --}}
+                @endswitch
             </div>
         </div>
         <!-- SidebarSearch Form -->
@@ -49,7 +62,7 @@
                         <li
                             class="nav-item {{ in_array(
                                 request()->route()->getName(),
-                                ['admin.accounts.index', 'admin.accounts.create'],
+                                ['users.tasks.index', 'users.tasks.taskToday'],
                             )
                                 ? 'menu-is-opening menu-open'
                                 : '' }}">
@@ -62,10 +75,17 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('users.task.index') }}"
-                                        class="nav-link {{ request()->route()->getName() == 'admin.accounts.create'? 'option-open': '' }}">
+                                    <a href="{{ route('users.tasks.index') }}"
+                                        class="nav-link {{ request()->route()->getName() == 'users.tasks.index'? 'option-open': '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Danh sách</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('users.tasks.taskToday') }}"
+                                        class="nav-link {{ request()->route()->getName() == 'users.tasks.taskToday'? 'option-open': '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Nhiệm vụ cần làm</p>
                                     </a>
                                 </li>
                             </ul>

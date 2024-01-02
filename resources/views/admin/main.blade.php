@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/template/admin/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="/template/admin/plugins/daterangepicker/daterangepicker.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="/template/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
@@ -94,6 +95,7 @@
     <script src="/template/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/template/admin/dist/js/adminlte.min.js"></script>
+    <script src="/template/admin/plugins/daterangepicker/daterangepicker.js"></script>
     <!-- main.js-->
     {{-- <script src="/template/admin/js/main.js"></script> --}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

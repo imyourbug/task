@@ -8,8 +8,11 @@ use App\Http\Requests\Users\LoginRequest;
 use App\Http\Requests\Users\RecoverRequest;
 use App\Http\Requests\Users\RegisterRequest;
 use App\Mail\RecoverPasswordMail;
+use App\Models\AirTask;
+use App\Models\ElecTask;
 use App\Models\InfoUser;
 use App\Models\User;
+use App\Models\WaterTask;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -23,9 +26,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('user.home', [
+        $id = Auth::id();
+
+        return view('user.task.list', [
             'title' => 'Trang người dùng',
-            'user' => Auth::user(),
+            'electasks' => ElecTask::where('user_id', $id)->orderByDesc('created_at')->get(),
+            'airtasks' => AirTask::where('user_id', $id)->orderByDesc('created_at')->get(),
+            'watertasks' => WaterTask::where('user_id', $id)->orderByDesc('created_at')->get(),
         ]);
     }
 

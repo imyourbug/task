@@ -19,10 +19,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group(['namespace' => 'App\Http\Controllers\Users'], function () {
-    Route::get('/task', 'TaskController@getQuantityByType');
-    Route::post('/getOTP', 'TaskController@getOTP');
-    Route::post('/updateOTP', 'TaskController@updateOTP');
-    Route::get('/getNumberphone', 'TaskController@getNumberphone');
+    Route::group(['prefix' => 'tasks', 'as' => 'tasks.'], function () {
+        Route::post('/updateElecTask', 'TaskController@updateElecTask')->name('updateElecTask');
+        Route::post('/updateWaterTask', 'TaskController@updateWaterTask')->name('updateWaterTask');
+        Route::post('/updateAirTask', 'TaskController@updateAirTask')->name('updateAirTask');
+    });
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Admin'], function () {

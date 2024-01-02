@@ -1,94 +1,122 @@
 $(document).ready(function () {
-    var otp_value = "";
-    var autoCall = null;
-    var id_task = "";
-    $(".cancopy").css("cursor", "pointer");
-    $("#space").click(function (event) {
-        let idClicked = event.target.id;
-        let value = $("#" + idClicked).attr("data-value");
-        if (value !== undefined) {
-            navigator.clipboard.writeText(value);
-            toastr.success("Đã sao chép", "Thông báo");
-        }
+    var tableElec = $('#table-elec').DataTable({
+        responsive: true
     });
-    getQuantity();
-
-    $("#code_freeship").on("change", function (event) {
-        getQuantity();
+    var tableWater = $('#table-water').DataTable({
+        responsive: true
     });
-
-    function getQuantity() {
-        let type = $("#code_freeship").find("option:selected").val();
-        $.ajax({
-            url: "/api/task?type=" + type,
-            type: "GET",
-            success: function (response) {
-                let html = "Số lượng nhiệm vụ có thể làm: " + response.quantity;
-                $("#quantity").html(html);
-            },
-        });
-    }
-
-    $(".btn-getOTP").on("click", function (event) {
-        let rs = confirm("Bạn có muốn lấy OTP?");
-        if (rs) {
-            id_task = $(this).attr("data-value");
-            if (autoCall != null) {
-                clearInterval(autoCall);
-            }
-            // get number phone sheet Numberphone
-            // display phone get otp
-            $.ajax({
-                url: "/user/task/display/" + id_task,
-                type: "GET",
-                success: function (response) {
-                    if (response.status == 0) {
-                        autoCall = setInterval(function () {
-                            getOTP(id_task, response.number_phone);
-                        }, 5000);
-                    }
-                    if (response.status == 1) {
-                        toastr.error(response.message, "Thông báo");
-                    }
-                },
-            });
-        }
+    var tableAir = $('#table-air').DataTable({
+        responsive: true
     });
-
-    function getOTP(id, number_phone) {
-        if (otp_value != "") {
-            clearInterval(autoCall);
-            console.log("call update OTP");
-            updateOTP(id, otp_value, number_phone);
-            return;
-        }
-        $.ajax({
-            url: "/api/getOTP",
-            data: { id, number_phone },
-            type: "POST",
-            success: function (response) {
-                if (response.status == 0) {
-                    otp_value = response.otp;
-                    console.log(otp_value);
-                }
-            },
-        });
-    }
-
-    function updateOTP(id, otp, number_phone) {
-        $.ajax({
-            url: "/api/updateOTP",
-            data: { id, otp, number_phone },
-            type: "POST",
-            success: function (response) {
-                if (response.status == 0) {
-                    toastr.success("Đã lấy OTP thành công", "Thông báo");
-                    location.reload();
-                }
-                if (response.status == 1) {
-                    toastr.error(response.message, "Thông báo");
-                }
-            },
-        });
-    }
 });
+
+$('.btn-elec').on('click', function () {
+    $('#amount').val($(this).data('amount'));
+    $('#id_electask').val($(this).data('id'));
+})
+
+$('.btn-save-elec').on('click', function () {
+    let amount = $('#amount').val();
+    let id = $('#id_electask').val();
+    $.ajax({
+        type: "POST",
+        url: $('.url_update_elec').val(),
+        data: {
+            id: id,
+            amount: amount,
+        },
+        success: function (response) {
+            if (response.status == 0) {
+                toastr.success(response.message);
+                $('.amount-' + id).text(amount);
+                closeModal('elec');
+            } else {
+                toastr.error(response.message);
+            }
+        },
+    });
+})
+
+$('.btn-water').on('click', function () {
+    $('#asen').val($(this).data('asen'));
+    $('#stiffness').val($(this).data('stiffness'));
+    $('#ph').val($(this).data('ph'));
+    $('#id_watertask').val($(this).data('id'));
+})
+
+$('.btn-save-water').on('click', function () {
+    let asen = $('#asen').val();
+    let stiffness = $('#stiffness').val();
+    let ph = $('#ph').val();
+    let id = $('#id_watertask').val();
+    $.ajax({
+        type: "POST",
+        url: $('.url_update_water').val(),
+        data: {
+            id: id,
+            asen: asen,
+            stiffness: stiffness,
+            ph: ph,
+        },
+        success: function (response) {
+            if (response.status == 0) {
+                toastr.success(response.message);
+                $('.asen-' + id).text(asen);
+                $('.stiffness-' + id).text(stiffness);
+                $('.ph-' + id).text(ph);
+                closeModal('water');
+            } else {
+                toastr.error(response.message);
+            }
+        },
+    });
+})
+
+
+$('.btn-air').on('click', function () {
+    $('#fine_dust').val($(this).data('fine_dust'));
+    $('#dissolve').val($(this).data('dissolve'));
+    $('#id_airtask').val($(this).data('id'));
+})
+
+$('.btn-save-air').on('click', function () {
+    let fine_dust = $('#fine_dust').val();
+    let dissolve = $('#dissolve').val();
+    let id = $('#id_airtask').val();
+    $.ajax({
+        type: "POST",
+        url: $('.url_update_air').val(),
+        data: {
+            id: id,
+            fine_dust: fine_dust,
+            dissolve: dissolve,
+        },
+        success: function (response) {
+            if (response.status == 0) {
+                toastr.success(response.message);
+                $('.fine_dust-' + id).text(fine_dust);
+                $('.dissolve-' + id).text(dissolve);
+                closeModal('air');
+            } else {
+                toastr.error(response.message);
+            }
+        },
+    });
+})
+
+
+function closeModal(type) {
+    $('#modal-' + type).css('display', 'none');
+    console.log('#modal-' + type);
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+}
+
+function openModal(type) {
+    // console.log($('#modal-' + type).data('id'));
+    switch (type) {
+        case 'elec':
+            $('#' + type).val();
+            break;
+    }
+}
