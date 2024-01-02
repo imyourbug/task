@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin\Accounts;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Accounts\CreateAccountRequest;
 use App\Http\Requests\Admin\Accounts\UpdateAccountRequest;
+use App\Models\AirTask;
 use App\Models\Customer;
+use App\Models\ElecTask;
 use App\Models\InfoUser;
 use App\Models\User;
+use App\Models\WaterTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +40,8 @@ class AccountController extends Controller
             DB::beginTransaction();
             $user = User::create([
                 is_numeric($tel_or_email) ? 'name' : 'email' =>  $tel_or_email,
-                'password' => Hash::make($request->input('password'))
+                'password' => Hash::make($request->input('password')),
+                'role' => (int) $request->role
             ]);
             switch ((int) $request->role) {
                 case 0:
@@ -78,16 +82,6 @@ class AccountController extends Controller
         return redirect()->back();
     }
 
-    public function delete($id)
-    {
-        $delete = User::firstWhere('id', $id)->delete();
-        if ($delete) {
-            Toastr::success(__('message.success.delete'), __('title.toastr.success'));
-        } else Toastr::error(__('message.fail.delete'), __('title.toastr.fail'));
-
-        return redirect()->back();
-    }
-
     public function index()
     {
         return view('admin.account.list', [
@@ -107,12 +101,20 @@ class AccountController extends Controller
     public function destroy($id)
     {
         try {
-            User::firstWhere('id', $id)->delete();
+            DB::beginTransaction();
+            $user = User::firstWhere('id', $id);
+            ElecTask::where('user_id', $user->id)->update(['user_id' => null]);
+            WaterTask::where('user_id', $user->id)->update(['user_id' => null]);
+            AirTask::where('user_id', $user->id)->update(['user_id' => null]);
+
+            $user->delete();
+            DB::commit();
 
             return response()->json([
                 'status' => 0,
             ]);
         } catch (Throwable $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 1,
                 'message' => $e->getMessage()

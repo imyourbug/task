@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>{{$title}}</title>
+    <title>{{ $title }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -21,6 +21,16 @@
     <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
     <style>
         .hidden {
+            display: none;
+        }
+
+        .option-open {
+            background-color: rgba(255, 255, 255, .1);
+        }
+        .open-block {
+            display: block;
+        }
+        .open-none {
             display: none;
         }
     </style>
@@ -44,9 +54,9 @@
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     @if (Auth::user()?->role == 1)
-                    <a href="{{route('admin.index') }}" class="nav-link">Trang chủ</a>
+                        <a href="{{ route('admin.index') }}" class="nav-link">Trang chủ</a>
                     @else
-                    <a href="{{ route('users.home')  }}" class="nav-link">Trang chủ</a>
+                        <a href="{{ route('users.home') }}" class="nav-link">Trang chủ</a>
                     @endif
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">

@@ -21,10 +21,9 @@
     <script src="/js/admin/account/index.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-    <script></script>
 @endpush
 @section('content')
-<a href="{{ route('admin.accounts.create') }}" class="btn btn-success">Thêm mới</a>
+    <a href="{{ route('admin.accounts.create') }}" class="btn btn-success">Thêm mới</a>
     <table id="table" class="table display nowrap dataTable dtr-inline collapsed">
         <thead>
             <tr>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Customers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
@@ -55,16 +56,6 @@ class CustomerController extends Controller
         return redirect()->back();
     }
 
-    public function delete($id)
-    {
-        $delete = Customer::firstWhere('id', $id)->delete();
-        if ($delete) {
-            Toastr::success(__('message.success.delete'), __('title.toastr.success'));
-        } else Toastr::error(__('message.fail.delete'), __('title.toastr.fail'));
-
-        return redirect()->back();
-    }
-
     public function index()
     {
         return view('admin.customer.list', [
@@ -84,7 +75,7 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         try {
-            Customer::firstWhere('id', $id)->delete();
+            User::firstWhere('id', $id)->delete();
 
             return response()->json([
                 'status' => 0,

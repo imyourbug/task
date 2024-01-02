@@ -18,10 +18,15 @@
     </style>
 @endpush
 @push('scripts')
-    <script src="/js/admin/contract/index.js"></script>
+    <script>
+        $(document).ready(function() {
+            var dataTable = $('#table').DataTable({
+                responsive: true
+            });
+        })
+    </script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-    <script></script>
 @endpush
 @section('content')
     <a href="{{ route('admin.contracts.create') }}" class="btn btn-success">Thêm mới</a>
@@ -29,6 +34,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Tên hợp đồng</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Nội dung</th>
@@ -39,10 +45,11 @@
             @foreach ($contracts as $key => $contract)
                 <tr class="row{{ $contract->id }}">
                     <th>{{ $contract->id }}</th>
-                    <td>{{ $contract->start }}</td>
-                    <td>{{ $contract->finish }}</td>
+                    <td>{{ $contract->name }}</td>
+                    <td>{{ date('d-m-Y', strtotime($contract->start)) }}</td>
+                    <td>{{ date('d-m-Y', strtotime($contract->finish)) }}</td>
                     <td>{{ $contract->content }}</td>
-                    <td>{{ $contract->content }}</td>
+                    <td>{{ $contract->customer->name }}</td>
                     <td><a class="btn btn-primary btn-sm" href='{{ route('admin.contracts.show', ['id' => $contract->id]) }}'>
                             <i class="fas fa-edit"></i>
                         </a>

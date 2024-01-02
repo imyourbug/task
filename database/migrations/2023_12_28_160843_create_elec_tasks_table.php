@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->float('amount')->default(0);
             $table->date('plan_date')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('contract_id');
             $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
             $table->timestamps();

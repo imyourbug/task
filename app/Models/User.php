@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Task::class, 'user_id', 'id');
     }
+
+    public function staff()
+    {
+        return $this->hasOne(InfoUser::class, 'user_id', 'id');
+    }
 }

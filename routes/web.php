@@ -35,7 +35,6 @@ Route::group(['prefix' => 'user', 'namespace' => 'App\Http\Controllers\Users', '
 
     #task
     Route::group(['prefix' => 'task', 'as' => 'task.', 'middleware' => 'auth'], function () {
-
         Route::get('/', 'TaskController@index')->name('index');
         Route::post('/download', 'TaskController@download')->name('download');
         Route::get('/complete/{id}', 'TaskController@update')->name('update');
@@ -68,8 +67,17 @@ Route::group(['prefix' => '/admin', 'namespace' => 'App\Http\Controllers\Admin',
         Route::post('/update', 'CustomerController@update')->name('update');
     });
 
-     #tasktypes
-     Route::group(['prefix' => 'tasktypes', 'namespace' => 'TaskTypes', 'as' => 'tasktypes.'], function () {
+    #staffs
+    Route::group(['prefix' => 'staffs', 'namespace' => 'Staffs', 'as' => 'staffs.'], function () {
+        Route::get('/', 'InfoUserController@index')->name('index');
+        // Route::get('/create', 'InfoUserController@create')->name('create');
+        // Route::post('/create', 'InfoUserController@store')->name('store');
+        Route::get('/update/{id}', 'InfoUserController@show')->name('show');
+        Route::post('/update', 'InfoUserController@update')->name('update');
+    });
+
+    #tasktypes
+    Route::group(['prefix' => 'tasktypes', 'namespace' => 'TaskTypes', 'as' => 'tasktypes.'], function () {
         Route::get('/', 'TaskTypeController@index')->name('index');
         Route::get('/create', 'TaskTypeController@create')->name('create');
         Route::post('/create', 'TaskTypeController@store')->name('store');
@@ -85,11 +93,30 @@ Route::group(['prefix' => '/admin', 'namespace' => 'App\Http\Controllers\Admin',
         Route::post('/update', 'ContractController@update')->name('update');
     });
 
-    #volunteers
-    Route::group(['prefix' => 'volunteers', 'namespace' => 'Volunteers', 'as' => 'volunteers.'], function () {
-        Route::get('/', 'VolunteerController@index')->name('index');
-        Route::get('/request', 'VolunteerController@request')->name('request');
-        Route::get('/getData', 'VolunteerController@getData')->name('getData');
-        Route::get('/getDataById/{id}', 'VolunteerController@getDataById');
+    #electasks
+    Route::group(['prefix' => 'electasks', 'namespace' => 'ElecTasks', 'as' => 'electasks.'], function () {
+        Route::get('/', 'ElecTaskController@index')->name('index');
+        Route::get('/create', 'ElecTaskController@create')->name('create');
+        Route::post('/create', 'ElecTaskController@store')->name('store');
+        Route::get('/update/{id}', 'ElecTaskController@show')->name('show');
+        Route::post('/update', 'ElecTaskController@update')->name('update');
+    });
+
+    #airtasks
+    Route::group(['prefix' => 'airtasks', 'namespace' => 'AirTasks', 'as' => 'airtasks.'], function () {
+        Route::get('/', 'AirTaskController@index')->name('index');
+        Route::get('/create', 'AirTaskController@create')->name('create');
+        Route::post('/create', 'AirTaskController@store')->name('store');
+        Route::get('/update/{id}', 'AirTaskController@show')->name('show');
+        Route::post('/update', 'AirTaskController@update')->name('update');
+    });
+
+    #watertasks
+    Route::group(['prefix' => 'watertasks', 'namespace' => 'WaterTasks', 'as' => 'watertasks.'], function () {
+        Route::get('/', 'WaterTaskController@index')->name('index');
+        Route::get('/create', 'WaterTaskController@create')->name('create');
+        Route::post('/create', 'WaterTaskController@store')->name('store');
+        Route::get('/update/{id}', 'WaterTaskController@show')->name('show');
+        Route::post('/update', 'WaterTaskController@update')->name('update');
     });
 });
