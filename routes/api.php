@@ -23,6 +23,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Users'], function () {
         Route::post('/updateElecTask', 'TaskController@updateElecTask')->name('updateElecTask');
         Route::post('/updateWaterTask', 'TaskController@updateWaterTask')->name('updateWaterTask');
         Route::post('/updateAirTask', 'TaskController@updateAirTask')->name('updateAirTask');
+        Route::post('export', 'TaskController@export')->name('export');
     });
 });
 

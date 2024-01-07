@@ -10,8 +10,9 @@ use App\Models\WaterTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Sheets;
+use PDF;
 use Throwable;
 use Toastr;
 
@@ -19,14 +20,38 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $id = Auth::id();
-
-        return view('user.task.list', [
+        return view('user.task.order', [
             'title' => 'Danh sách nhiệm vụ',
-            'electasks' => ElecTask::where('user_id', $id)->orderByDesc('created_at')->get(),
-            'airtasks' => AirTask::where('user_id', $id)->orderByDesc('created_at')->get(),
-            'watertasks' => WaterTask::where('user_id', $id)->orderByDesc('created_at')->get(),
         ]);
+        // $id = Auth::id();
+
+        // return view('user.task.list', [
+        //     'title' => 'Danh sách nhiệm vụ',
+        //     'electasks' => ElecTask::where('user_id', $id)->orderByDesc('created_at')->get(),
+        //     'airtasks' => AirTask::where('user_id', $id)->orderByDesc('created_at')->get(),
+        //     'watertasks' => WaterTask::where('user_id', $id)->orderByDesc('created_at')->get(),
+        // ]);
+    }
+
+    public function export()
+    {
+        $data = [];
+        $pdf = PDF::loadView('pdf.order', $data)
+            ->setPaper('A4', 'portrait');
+        //Nếu muốn hiển thị file pdf theo chiều ngang
+        // $pdf->setPaper('A4', 'landscape');
+
+        $filename = 'order.pdf';
+        //Nếu muốn download file pdf
+        Storage::disk('local')->put('/public/pdf/' . $filename, $pdf->output());
+
+        return response()->json([
+            'status' => 0,
+            'url' => '/storage/pdf/' . $filename,
+            'filename' => $filename,
+        ]);
+        //Nếu muốn preview in pdf
+        //return $pdf->stream('myPDF.pdf');
     }
 
     public function taskToday()
